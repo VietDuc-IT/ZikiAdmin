@@ -1,0 +1,288 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Ziki Admin</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <style>
+            .labs{
+                display: inline-block;
+                width: 100px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container"><h2>Danh sách món ăn</h2></div>
+        <div class="container mt-3">
+            <table class="table table-dark">
+                <thead>
+                    <th>Stt</th>
+                    <th>Tên</th>
+                    <th>Giá</th>
+                    <th>Ảnh</th>
+                    <th>Loại món</th>
+                    <th>Thao tác</th>
+                </thead>
+                <tbody id="tbody1">
+                </tbody>
+            </table>
+        </div>
+        <!-- Button trigger modal -->
+        
+        
+        <!-- Modal START-->
+        <div class="modal fade" id="exampleModalCenterAdd" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Thêm mới</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                <label class="labs">Tên: </label>
+                <input type="text" id="NameMod"> <br>
+
+                <label class="labs">Giá: </label>
+                <input type="text" id="PriceMod"> <br>
+
+                <label class="labs">Ảnh: </label>
+                <input type="text" id="ImgMod"> <br>
+
+                <label class="labs">Loại món: </label>
+                <input type="text" id="ImgCat"> <br>
+                </div>
+                <div class="modal-footer">
+                <button id="AddModBtn" type="button" class="btn btn-primary" onclick="AddStd()">Thêm</button>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Chỉnh sửa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                <label class="labs">Tên: </label>
+                <input type="text" id="NameMod"> <br>
+
+                <label class="labs">Giá: </label>
+                <input type="text" id="PriceMod"> <br>
+
+                <label class="labs">Ảnh: </label>
+                <input type="text" id="ImgMod"> <br>
+
+                <label class="labs">Loại món: </label>
+                <input type="text" id="ImgCat"> <br>
+                </div>
+                <div class="modal-footer">
+                <button id="UpdModBtn" type="button" class="btn btn-success" onclick="UpdStd()">Cập nhật</button>
+                <button id="DelModBtn" type="button" class="btn btn-danger" onclick="DelStd()">Xóa</button>
+                </div>
+            </div>
+            </div>
+        </div>
+        <!-- Modal END -->
+        <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
+
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/7.14.1-0/firebase.js"></script>
+
+        <script type="module">
+            //================================================= DATA ==============================================================
+            // Import the functions you need from the SDKs you need
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+            
+            const firebaseConfig = {
+                apiKey: "AIzaSyAyCx6OH5gDwh4ADOIRRVQS2J57VCWrSVU",
+                authDomain: "foodapp-97729.firebaseapp.com",
+                databaseURL: "https://foodapp-97729-default-rtdb.firebaseio.com",
+                projectId: "foodapp-97729",
+                storageBucket: "foodapp-97729.appspot.com",
+                messagingSenderId: "501233836987",
+                appId: "1:501233836987:web:c9520c1d5d2e3e26bfda9e",
+                measurementId: "G-Q3SHNVRR6E"
+            };
+
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            //firebase.initializeApp(firebaseConfig);
+
+            import { getDatabase, ref, child, onValue, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+            const db = getDatabase();
+
+            //===========================GET DATA==============================
+            function GetAllDataOnce(){
+                document.getElementById("tbody1").innerHTML="";
+                stdNo=0;
+                const dbRef = ref(db);
+
+                get(child(dbRef, "/foodApp/product"))
+                .then((snapshot)=>{
+                    var products = [];
+
+                    snapshot.forEach(childSnapshot => {
+                        products.push(childSnapshot.val());
+                    });
+
+                    AddAllItemToTable(products);
+                });
+            }
+
+            function GetAllDataRealtime(){
+
+                const dbRef = ref(db, "/foodApp/product");
+
+                onValue(dbRef,(snapshot)=>{
+                    var products = [];
+                    
+                    snapshot.forEach(childSnapshot => {
+                        products.push(childSnapshot.val());
+                    });
+
+                    AddAllItemToTable(products);
+                })
+            }
+            function AddAllItemToTable(TheStudent){
+                stdNo=0;
+                tbody1.innerHTML="";
+                TheStudent.forEach(element => {
+                    AddItemToTable(element.name,element.price,element.img,element.type);
+                });
+            }
+
+            window.onload = GetAllDataOnce;
+            //================================================================
+            var stdNo = 0;
+            var stdList = [];
+
+            function AddItemToTable(name,price,img,type){
+                var tbody1 = document.getElementById('tbody1');
+                var trow = document.createElement("tr");
+                var td0 = document.createElement('td');
+                var td1 = document.createElement('td');
+                var td2 = document.createElement('td');
+                var td3 = document.createElement('td');
+                var td4 = document.createElement('td');
+
+                stdList.push([name,price,img,type]);
+
+                td0.innerHTML= ++stdNo;
+                td1.innerHTML= name;
+                td2.innerHTML= price;
+                td3.innerHTML= shortenURL(img);
+                td4.innerHTML= type;
+
+                trow.appendChild(td0);
+                trow.appendChild(td1);
+                trow.appendChild(td2);
+                trow.appendChild(td3);
+                trow.appendChild(td4);
+
+                var ControlDiv = document.createElement("div");
+                ControlDiv.innerHTML = '<button type="button" class="btn btn-primary my-2" data-toggle="modal" data-target="#exampleModalCenterAdd" onclick="FillTboxes(null)">Thêm mới</button>';
+                ControlDiv.innerHTML += '<button type="button" class="btn btn-primary my-2 ml-2" data-toggle="modal" data-target="#exampleModalCenter" onclick="FillTboxes('+stdNo+')">Chỉnh sửa</button>';
+
+                trow.appendChild(ControlDiv);
+                tbody1.appendChild(trow);
+
+                function shortenURL(url) {
+                // Rút ngắn URL ảnh
+                var maxLength = 15; // Đặt độ dài tối đa bạn muốn hiển thị
+                if (url.length > maxLength) {
+                    return url.substring(0, maxLength) + "..."; // Cắt ngắn chuỗi và thêm dấu "..." vào cuối
+                } else {
+                    return url;
+                }
+                }
+            }
+
+            var ModName = document.getElementById('NameMod');
+            var ModPrice = document.getElementById('PriceMod');
+            var ModImg = document.getElementById('ImgMod');
+            var ModType = document.getElementById('TypeMod');
+
+            var BTNmodAdd = document.getElementById('AddModBtn');
+            var BTNmodUpd = document.getElementById('UpdModBtn');
+            var BTNmodDel = document.getElementById('DelModBtn');
+
+            function FillTboxes(index){
+                if(index==null){
+                    ModName.value = "";
+                    ModPrice.value = "";
+                    ModImg.value = "";
+                    ModType.value = "";
+                    BTNmodAdd.style.display="inline-block";
+                }else{
+                    --index;
+                    ModName.value = stdList[index][0];
+                    ModPrice.value = stdList[index][1];
+                    ModImg.value = stdList[index][2];
+                    ModType.value = stdList[index][3];
+                    BTNmodUpd.style.display="inline-block";
+                    BTNmodDel.style.display="inline-block";
+                }
+            }
+
+            function AddStd(){
+                firebase.database().ref("/foodApp/product"+ModRool.value).set({
+                    Tên: ModName.value,
+                    Giá: ModPrice.value,
+                    Ảnh: ModImg.value,
+                    Loại_món: ModType.value
+                },
+                (error)=>{
+                    if(error){
+                        alert("Lỗi!");
+                    }else{
+                        alert("Thêm thành công!");
+                        GetAllDataOnce();
+                        $("exampleModalCenter").modal('hide');
+                    }
+                })
+            }
+
+            function UpdStd(){
+                firebase.database().ref("/foodApp/product"+ModRool.value).update({
+                    Tên: ModName.value,
+                    Giá: ModPrice.value,
+                    Ảnh: ModImg.value,
+                    Loại_món: ModType.value
+                },
+                (error)=>{
+                    if(error){
+                        alert("Lỗi!");
+                    }else{
+                        alert("Cập nhật thành công!");
+                        GetAllDataOnce();
+                        $("exampleModalCenter").modal('hide');
+                    }
+                })
+            }
+
+            function DelStd(){
+                firebase.database().ref("/foodApp/product"+ModRool.value).remove().then(
+                    function(){
+                        alert("Xóa!");
+                        GetAllDataOnce();
+                        $("exampleModalCenter").modal('hide');
+                    }
+                )
+            }
+            
+        </script>
+    </body>
+</html>
