@@ -12,10 +12,14 @@ const Header = () => {
           Sản phẩm
         </NavLink>
 
-        <NavLink to="/add" className="btn" style={{ color: "white" }}>
-          Thêm
+        <NavLink to="/Category" className="btn" style={{ color: "white" }}>
+          Loại món ăn
         </NavLink>
-        
+
+        <NavLink to="/User" className="btn" style={{ color: "white" }}>
+          Khách hàng
+        </NavLink>
+
       </nav>
     </div>
   );
@@ -23,3 +27,4 @@ const Header = () => {
 
 export default Header;
 //<NavLink to="/about" className="btn" style={{ color: "white" }}>About</NavLink>
+//<NavLink to="/add" className="btn" style={{ color: "white" }}>Thêm</NavLink>

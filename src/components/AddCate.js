@@ -1,0 +1,128 @@
+import React, { useState, useEffect } from "react";
+import firebaseDb from "../firebase";
+import { useParams, useHistory } from "react-router-dom";
+import { isEmpty } from "lodash";
+
+const AddCate = () => {
+  const values = {
+    name: "",
+    img: "",
+    type: "",
+  };
+  const [initialState, setState] = useState(values);
+  const [data, setData] = useState({});
+
+  //   console.log("currentId", currentId);
+  const urlProduct = "/foodApp/category";
+
+  const { name, img, type } = initialState;
+
+  const currentId = useParams();
+  const history = useHistory();
+
+  const { id } = currentId;
+
+  console.log("currentId", currentId);
+
+  useEffect(() => {
+    firebaseDb.child(urlProduct).on("value", (snapshot) => {
+      if (snapshot.val() !== null) {
+        setData({
+          ...snapshot.val(),
+        });
+      } else {
+        setData({});
+      }
+    });
+  }, [id]);
+
+  useEffect(() => {
+    if (isEmpty(id)) {
+      console.log("initialState", initialState);
+      setState({ ...values });
+    } else {
+      setState({ ...data[id] });
+    }
+  }, [id, data]);
+
+  const handleInputChange = (e) => {
+    let { name, value } = e.target;
+    if (name === "price") {
+      value = parseFloat(value); // Chuyển đổi giá trị price sang kiểu số
+    }
+    setState({
+      ...initialState,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = (e, obj) => {
+    e.preventDefault();
+    console.log("initialState", initialState);
+    if (isEmpty(id)) {
+      firebaseDb.child(urlProduct).push(initialState, (err) => {
+        if (err) {
+          console.log(err);
+        }
+      });
+    } else {
+      //`contacts/${id}`
+      firebaseDb.child(`/foodApp/category/${id}`).set(initialState, (err) => {
+        if (err) {
+          console.log(err);
+        }
+      });
+    }
+    history.push("/category");
+  };
+
+  return (
+    <div className="container mt-5">
+      <div className="row">
+        <div className="col-md-6">
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label className="bmd-label-floating">Tên</label>
+              <input
+                type="text"
+                className="form-control"
+                name="name"
+                placeholder="Tên loại món ..."
+                value={name}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="form-group">
+              <label className="bmd-label-floating">Ảnh</label>
+              <input
+                type="text"
+                className="form-control"
+                name="img"
+                placeholder="Url ảnh ..."
+                value={img}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="form-group">
+              <label className="bmd-label-floating">Loại</label>
+              <input
+                type="text"
+                className="form-control"
+                name="type"
+                placeholder="Loại món ăn ..."
+                value={type}
+                onChange={handleInputChange}
+              />
+            </div>
+            <button className="btn btn-default">Hũy</button>
+            <button type="submit" className="btn btn-success btn-raised">
+              Gửi
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AddCate;

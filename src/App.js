@@ -5,7 +5,11 @@ import AddEdit from "./components/AddEdit";
 import Error from "./components/Error";
 import Header from "./components/Header";
 import View from "./components/View";
-import About from "./components/About";
+import User from "./components/User";
+import ViewUser from "./components/ViewUser";
+import Category from "./components/Category";
+import ViewCategory from "./components/ViewCategory";
+import AddCate from "./components/AddCate";
 
 function App() {
   return (
@@ -16,7 +20,12 @@ function App() {
           <Route exact path="/add" component={AddEdit} />
           <Route exact path="/view/:id" component={View} />
           <Route exact path="/update/:id" component={AddEdit} />
-          <Route exact path="/about" component={About} />
+          <Route exact path="/user" component={User} />
+          <Route exact path="/viewUser/:id" component={ViewUser} />
+          <Route exact path="/category" component={Category} />
+          <Route exact path="/viewCategory/:id" component={ViewCategory} />
+          <Route exact path="/addCate" component={AddCate} />
+          <Route exact path="/updateCate/:id" component={AddCate} />
           <Route path="*" component={Error} />
         </Switch>
       
