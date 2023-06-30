@@ -48,6 +48,9 @@ const AddEdit = () => {
 
   const handleInputChange = (e) => {
     let { name, value } = e.target;
+    if (name === "price") {
+      value = parseFloat(value); // Chuyển đổi giá trị price sang kiểu số
+    }
     setState({
       ...initialState,
       [name]: value,
@@ -85,6 +88,7 @@ const AddEdit = () => {
                 type="text"
                 className="form-control"
                 name="name"
+                placeholder="Tên món ăn ..."
                 value={name}
                 onChange={handleInputChange}
               />
@@ -95,6 +99,7 @@ const AddEdit = () => {
                 type="number"
                 className="form-control"
                 name="price"
+                placeholder="Giá tiền ..."
                 value={price}
                 onChange={handleInputChange}
               />
@@ -105,6 +110,7 @@ const AddEdit = () => {
                 type="text"
                 className="form-control"
                 name="img"
+                placeholder="Url ảnh ..."
                 value={img}
                 onChange={handleInputChange}
               />
@@ -115,13 +121,14 @@ const AddEdit = () => {
                 type="text"
                 className="form-control"
                 name="type"
+                placeholder="Loại món ăn ..."
                 value={type}
                 onChange={handleInputChange}
               />
             </div>
-            <button className="btn btn-default">Cancel</button>
+            <button className="btn btn-default">Hũy</button>
             <button type="submit" className="btn btn-success btn-raised">
-              Submit
+              Gửi
             </button>
           </form>
         </div>

@@ -9,11 +9,11 @@ const Header = () => {
         style={{ backgroundColor: "rgb(120, 120, 120)" }}
       >
         <NavLink to="/" className="btn" style={{ color: "white" }}>
-          Home
+          Sản phẩm
         </NavLink>
 
         <NavLink to="/add" className="btn" style={{ color: "white" }}>
-          Add
+          Thêm
         </NavLink>
         
       </nav>
